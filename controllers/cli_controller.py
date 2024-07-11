@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from init import db
+from init import db, bcrypt
 from models.user import User
 
 db_commands = Blueprint("db", __name__)
@@ -14,3 +14,28 @@ def create_tables():
 def drop_tables():
     db.drop_all()
     print("Tables dropped")
+
+@db_commands.cli.command("seed")
+def seed_tables():
+    users = [
+        User(
+            email="admin@email.com",
+            password=bcrypt.generate_password_hash("168891").decode("utf-8"),
+            is_admin=True
+        ),
+        User(
+            user_name="kimyu0112",
+            email="kimyu0112@outlook.com",
+            password=bcrypt.generate_password_hash("168891").decode("utf-8"),
+        
+        )
+    ]
+
+    db.session.add_all(users)
+
+    db.session.commit()
+
+    print("Tables seeded")
+
+
+
