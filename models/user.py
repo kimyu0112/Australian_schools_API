@@ -13,7 +13,7 @@ class User(db.Model):
     follows = db.relationship('Follow', back_populates='user')
 
 class UserSchema(ma.Schema):
-    follows = fields.List(fields.nested('FollowSchema'), exclude=["user"])
+    follows = fields.List(fields.Nested('FollowSchema'), exclude=["user"])
     class Meta:
         fields = ("id", "user_name", "email", "password", "is_admin", "follows")
 
