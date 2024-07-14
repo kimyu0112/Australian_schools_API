@@ -11,13 +11,15 @@ class School(db.Model):
     suburb = db.Column(db.String, nullable=False)
     education_level = db.Column(db.String, nullable=False)
     sector = db.Column(db.String, nullable=False)
-    total_enronment = db.Column(db.String)
+    total_enrolnment = db.Column(db.Integer)
     state_overall_score = db.Column(db.Integer)
+
+    follows = db.relationship('Follow', back_populates='school')
 
 class SchoolSchema(ma.Schema):
     follows = fields.List(fields.Nested('FollowSchema'), exclude=["school"])
     class Meta:
-        fields = ("id", "school_name", "coontact_email", "state", "suburb", "education_level", "sector", "total_enronment", "state_overall_score", "follows")
+        fields = ("id", "school_name", "contact_email", "state", "suburb", "education_level", "sector", "total_enrolnment", "state_overall_score", "follows")
 
 school_schema = SchoolSchema()
 schools_schema = SchoolSchema(many=True)
