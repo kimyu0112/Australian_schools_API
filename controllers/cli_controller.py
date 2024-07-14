@@ -2,6 +2,7 @@ from flask import Blueprint
 
 from init import db, bcrypt
 from models.user import User
+from models.follow import Follow
 
 db_commands = Blueprint("db", __name__)
 
@@ -31,6 +32,20 @@ def seed_tables():
     ]
 
     db.session.add_all(users)
+
+    follows = [
+        Follow(
+            user=users[1]
+        ),
+        Follow(
+            user=users[0]
+        ),
+        Follow(
+            user=users[1]
+        )
+    ]
+    
+    db.session.add_all(follows)
 
     db.session.commit()
 
