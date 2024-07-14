@@ -3,6 +3,7 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
 from models.follow import Follow
+from models.school import School
 
 db_commands = Blueprint("db", __name__)
 
