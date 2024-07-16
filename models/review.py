@@ -24,6 +24,7 @@ class ReviewSchema(ma.Schema):
 
     class Meta:
         fields = ("id", "review_title", "review_content", "created_at_time", "user", "school")
+        ordered = True
 
 reviews_schema = ReviewSchema(many=True)
 review_schema = ReviewSchema()

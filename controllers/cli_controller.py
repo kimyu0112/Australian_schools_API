@@ -4,6 +4,7 @@ from init import db, bcrypt
 from models.user import User
 from models.follow import Follow
 from models.school import School
+from models.review import Review
 
 db_commands = Blueprint("db", __name__)
 
