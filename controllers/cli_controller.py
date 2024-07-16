@@ -44,6 +44,16 @@ def seed_tables():
             sector="Government",
             total_enrolnment=964,
             state_overall_score=96
+        ),
+        School(
+            school_name="Kambrya College",
+            contact_email="kambrya@education.vic.government.au",
+            state="Victoria",
+            suburb="Berwick",
+            education_level="Secondary School",
+            sector="Government",
+            total_enrolnment=1226,
+            state_overall_score=87
         )
     ]
 
