@@ -3,6 +3,7 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
 from models.follow import Follow
+from models.school import School
 
 db_commands = Blueprint("db", __name__)
 
@@ -33,15 +34,29 @@ def seed_tables():
 
     db.session.add_all(users)
 
+    schools = [
+        School(
+            school_name="Brenwood Park Primary School",
+            contact_email="brentwood.park.ps@education.vic.gov.au",
+            state="Victoria",
+            suburb="Berwick",
+            education_level="Primary School",
+            sector="Government",
+            total_enrolnment=964,
+            state_overall_score=96
+        )
+    ]
+
+    db.session.add_all(schools)
+
     follows = [
         Follow(
-            user=users[1]
+            user=users[1],
+            school=schools[0]
         ),
         Follow(
-            user=users[0]
-        ),
-        Follow(
-            user=users[1]
+            user=users[0],
+            school=schools[0]
         )
     ]
     
