@@ -3,14 +3,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from init import db
 from models.school import School, school_schema, schoolss_schema
+from controllers.review_controller import reviews_bp
 
 schools_bp = Blueprint("schools", __name__, url_prefix="/schools")
-
-# /cards - GET - fetch all cards
-# /cards/<id> - GET - fetch a single card
-# /cards - POST - create a new card
-# /cards/<id> - DELETE - delete a card
-# /cards/<id> - PUT, PATCH - edit a card
+schools_bp.register_blueprint(reviews_bp)
 
 @schools_bp.route("/")
 def get_all_schools():
