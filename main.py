@@ -26,4 +26,7 @@ def create_app():
     from controllers.follow_controller import follows_bp
     app.register_blueprint(follows_bp)
 
+    from controllers.school_controller import schools_bp
+    app.register_blueprint(schools_bp)
+
     return app

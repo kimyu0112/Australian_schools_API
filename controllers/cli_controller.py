@@ -43,7 +43,7 @@ def seed_tables():
             suburb="Berwick",
             education_level="Primary School",
             sector="Government",
-            total_enrolnment=964,
+            total_enrolment=964,
             state_overall_score=96
         ),
         School(
@@ -53,7 +53,7 @@ def seed_tables():
             suburb="Berwick",
             education_level="Secondary School",
             sector="Government",
-            total_enrolnment=1226,
+            total_enrolment=1226,
             state_overall_score=87
         )
     ]

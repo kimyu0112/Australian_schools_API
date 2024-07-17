@@ -11,7 +11,7 @@ class School(db.Model):
     suburb = db.Column(db.String, nullable=False)
     education_level = db.Column(db.String, nullable=False)
     sector = db.Column(db.String, nullable=False)
-    total_enrolnment = db.Column(db.Integer)
+    total_enrolment = db.Column(db.Integer)
     state_overall_score = db.Column(db.Integer)
 
     follows = db.relationship('Follow', back_populates='school', cascade="all, delete")
