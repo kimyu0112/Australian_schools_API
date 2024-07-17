@@ -68,10 +68,37 @@ def seed_tables():
         Follow(
             user=users[0],
             school=schools[0]
+        ),
+        Follow(
+            user=users[0],
+            school=schools[1]
         )
     ]
     
     db.session.add_all(follows)
+
+    reviews = [
+        Review(
+            review_title="This school's Principal is good!",
+            review_content="Blablabla",
+            user=users[0],
+            school=schools[0]
+        ),
+        Review(
+            review_title="This school is bad!",
+            review_content="Blablabla",
+            user=users[0],
+            school=schools[1]
+        ),
+        Review(
+            review_title="Staff can be better supported",
+            review_content="Blablabla",
+            user=users[1],
+            school=schools[1]
+        )
+    ]
+    
+    db.session.add_all(reviews)
 
     db.session.commit()
 
