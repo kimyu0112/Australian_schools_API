@@ -12,14 +12,14 @@ def get_all_follows():
     follows = db.session.scalars(stmt)
     return follows_schema.dump(follows)
 
-@follows_bp.route("/<int:follow_id>")
-def get_one_follow(follow_id):
-    stmt = db.select(Follow).filter_by(id=follow_id)
-    follow = db.session.scalar(stmt)
-    if follow:
-        return follow_schema.dump(follow)
-    else:
-        return {"error": f"Follow with id {follow_id} not found"}, 404
+# @follows_bp.route("/<int:follow_id>")
+# def get_one_follow(follow_id):
+#     stmt = db.select(Follow).filter_by(id=follow_id)
+#     follow = db.session.scalar(stmt)
+#     if follow:
+#         return follow_schema.dump(follow)
+#     else:
+#         return {"error": f"Follow with id {follow_id} not found"}, 404
 
 @follows_bp.route("/", methods=["POST"])
 @jwt_required()
