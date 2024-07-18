@@ -32,3 +32,35 @@ def create_review(school_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
 
+@reviews_bp.route("/<int:review_id>", methods=["DELETE"])
+@jwt_required()
+def delete_review(school_id, review_id):
+    stmt = db.select(Review).filter_by(id=review_id)
+    review = db.session.scalar(stmt)
+
+    if review:
+        db.session.delete(review)
+        db.session.commit()
+        return {"message": f"Review '{review.review_title}' deleted successfully"}
+    
+    else:
+        return {"error": f"Review with id {review_id} not found"}, 404
+
+@reviews_bp.route("/<int:review_id>", methods=["PUT", "PATCH"])
+@jwt_required()
+def edit_review(school_id, review_id):
+    body_data = request.get_json()
+
+    stmt = db.select(Review).filter_by(id=review_id)
+    review = db.session.scalar(stmt)
+
+    if review:
+        review.review_title = body_data.get("review_title") or review.review_title
+        review.review_content = body_data.get("review_content") or review.review_content
+    
+        db.session.commit()
+      
+        return review_schema.dump(review)
+
+    else:
+        return {"error": f"Revuew with id {review_id} not found"}, 404
