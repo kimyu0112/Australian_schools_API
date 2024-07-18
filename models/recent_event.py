@@ -15,7 +15,7 @@ class Event(db.Model):
 class EventSchema(ma.Schema):
     school = fields.Nested('SchoolSchema', only=["school_name"])
     class Meta:
-        fields = ("id", "event_title", "event_content", "school")
+        fields = ("id", "event_title", "event_brief_desciption", "school")
 
 events_schema = EventSchema(many=True)
 event_schema = EventSchema()
