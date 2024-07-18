@@ -21,7 +21,7 @@ class SchoolSchema(ma.Schema):
     follows = fields.List(fields.Nested('FollowSchema'), exclude=["school"])
     reviews = fields.List(fields.Nested('ReviewSchema'), exclude=["school"])
     class Meta:
-        fields = ("id", "school_name", "contact_email", "state", "suburb", "education_level", "sector", "total_enrolnment", "state_overall_score", "follows", "reviews")
+        fields = ("id", "school_name", "contact_email", "state", "suburb", "education_level", "sector", "total_enrolment", "state_overall_score", "follows", "reviews")
 
 school_schema = SchoolSchema()
 schools_schema = SchoolSchema(many=True)

@@ -22,6 +22,7 @@ def drop_tables():
 def seed_tables():
     users = [
         User(
+            user_name="admin",
             email="admin@email.com",
             password=bcrypt.generate_password_hash("168891").decode("utf-8"),
             is_admin=True

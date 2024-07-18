@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from init import db
-from models.school import School, school_schema, schoolss_schema
+from models.school import School, school_schema, schools_schema
 from controllers.review_controller import reviews_bp
 
 schools_bp = Blueprint("schools", __name__, url_prefix="/schools")
