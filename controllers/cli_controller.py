@@ -4,6 +4,7 @@ from init import db, bcrypt
 from models.user import User
 from models.follow import Follow
 from models.school import School
+from models.review import Review
 
 db_commands = Blueprint("db", __name__)
 
@@ -21,6 +22,7 @@ def drop_tables():
 def seed_tables():
     users = [
         User(
+            user_name="admin",
             email="admin@email.com",
             password=bcrypt.generate_password_hash("168891").decode("utf-8"),
             is_admin=True
@@ -42,7 +44,7 @@ def seed_tables():
             suburb="Berwick",
             education_level="Primary School",
             sector="Government",
-            total_enrolnment=964,
+            total_enrolment=964,
             state_overall_score=96
         ),
         School(
@@ -52,7 +54,7 @@ def seed_tables():
             suburb="Berwick",
             education_level="Secondary School",
             sector="Government",
-            total_enrolnment=1226,
+            total_enrolment=1226,
             state_overall_score=87
         )
     ]
@@ -67,10 +69,37 @@ def seed_tables():
         Follow(
             user=users[0],
             school=schools[0]
+        ),
+        Follow(
+            user=users[0],
+            school=schools[1]
         )
     ]
     
     db.session.add_all(follows)
+
+    reviews = [
+        Review(
+            review_title="This school's Principal is good!",
+            review_content="Blablabla",
+            user=users[0],
+            school=schools[0]
+        ),
+        Review(
+            review_title="This school is bad!",
+            review_content="Blablabla",
+            user=users[0],
+            school=schools[1]
+        ),
+        Review(
+            review_title="Staff can be better supported",
+            review_content="Blablabla",
+            user=users[1],
+            school=schools[1]
+        )
+    ]
+    
+    db.session.add_all(reviews)
 
     db.session.commit()
 
