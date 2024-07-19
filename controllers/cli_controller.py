@@ -5,6 +5,9 @@ from models.user import User
 from models.follow import Follow
 from models.school import School
 from models.review import Review
+from models.recent_event import Event
+from models.subject import Subject
+from models.school_subject import SchoolSubject
 
 db_commands = Blueprint("db", __name__)
 

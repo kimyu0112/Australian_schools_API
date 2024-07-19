@@ -37,7 +37,7 @@ def register_user():
 
 @auth_bp.route("/login", methods=["POST"])
 def login_user():
-    body_data=request.get_json()
+    body_data = request.get_json()
     stmt = db.select(User).filter_by(email=body_data.get("email"))
     user = db.session.scalar(stmt)
 

@@ -1,8 +1,8 @@
+import datetime
+
 from init import db, ma
 from marshmallow import fields
 from sqlalchemy.sql import func
-
-import datetime
 
 class Review(db.Model):
     __tablename__ = "reviews"
