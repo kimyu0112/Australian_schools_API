@@ -10,7 +10,7 @@ reviews_bp = Blueprint("reviews", __name__, url_prefix="/<int:school_id>/reviews
 @reviews_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_review(school_id):
-    body_data = request.get_json()
+    body_data = review_schema.load(request.get_json(), partial=True)
     
     stmt = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt)
@@ -49,7 +49,7 @@ def delete_review(school_id, review_id):
 @reviews_bp.route("/<int:review_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def edit_review(school_id, review_id):
-    body_data = request.get_json()
+    body_data = review_schema.load(request.get_json())
 
     stmt = db.select(Review).filter_by(id=review_id)
     review = db.session.scalar(stmt)
