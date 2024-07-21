@@ -1,5 +1,8 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import OneOf
+
+VALID_STATES = ("New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", "Tasmania", "Northern Territory", "Australian Capital Territory")
 
 class School(db.Model):
     __tablename__ = "schools"
@@ -24,6 +27,9 @@ class SchoolSchema(ma.Schema):
     reviews = fields.List(fields.Nested('ReviewSchema'), exclude=["school"])
     recent_events = fields.List(fields.Nested('EventSchema'), exclude=["school"])
     school_subjects = fields.List(fields.Nested('SchoolSubjectSchema'), exclude=["school"])
+
+    state = fields.String(validate=OneOf(VALID_STATES))
+
     class Meta:
         fields = ("id", "school_name", "contact_email", "state", "suburb", "education_level", "sector", "total_enrolment", "state_overall_score", "follows", "reviews", "recent_events", "school_subjects")
 

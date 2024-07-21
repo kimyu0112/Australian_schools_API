@@ -10,7 +10,7 @@ schools_bp.register_blueprint(reviews_bp)
 
 @schools_bp.route("/")
 def get_all_schools():
-    stmt = db.select(School).order_by(School.school_name().desc())
+    stmt = db.select(School).order_by(School.school_name())
     schools = db.session.scalars(stmt)
     return schools_schema.dump(schools)
 
