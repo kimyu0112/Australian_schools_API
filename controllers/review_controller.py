@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from init import db
 from models.review import Review, review_schema, reviews_schema
 from models.school import School
+from utils import authorise_as_admin
 
 reviews_bp = Blueprint("reviews", __name__, url_prefix="/<int:school_id>/reviews")
 
@@ -39,6 +40,11 @@ def delete_review(school_id, review_id):
     review = db.session.scalar(stmt)
 
     if review:
+        is_admin = authorise_as_admin()
+
+        if not is_admin and str(review.user_id) != get_jwt_identity():
+            return {"error": "User is not authorised to perform this action."}, 403
+
         db.session.delete(review)
         db.session.commit()
         return {"message": f"Review '{review.review_title}' deleted successfully"}
@@ -55,6 +61,9 @@ def edit_review(school_id, review_id):
     review = db.session.scalar(stmt)
 
     if review:
+        if str(review.user_id) != get_jwt_identity():
+            return {"error": "You are not the owner of the review"}, 403 
+
         review.review_title = body_data.get("review_title") or review.review_title
         review.review_content = body_data.get("review_content") or review.review_content
     
