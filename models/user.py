@@ -1,5 +1,6 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Regexp
 
 class User(db.Model):
     __tablename__ = "users"
@@ -16,6 +17,11 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     follows = fields.List(fields.Nested('FollowSchema'), exclude=["user"])
     reviews = fields.List(fields.Nested('ReviewSchema'), exclude=["user"])
+    
+    email = fields.String(required=True, validate=Regexp("^\S+@\S+\.\S+$", error="Invalid Email Format"))
+
+    password = fields.String(required=True, validate=Regexp("^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", error="Minimum eight characters, at least one letter and one number"))
+    
     class Meta:
         fields = ("id", "user_name", "email", "password", "is_admin", "follows", "reviews")
 
