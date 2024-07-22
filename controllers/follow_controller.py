@@ -21,6 +21,8 @@ def get_all_follows(user_id):
     else:
         return {"message": f"User {user_id} does not exist or there are no followed schools"}, 404
 
+
+
 @follows_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_follow():
