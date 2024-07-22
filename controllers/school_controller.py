@@ -7,6 +7,7 @@ from controllers.review_controller import reviews_bp
 
 schools_bp = Blueprint("schools", __name__, url_prefix="/schools")
 schools_bp.register_blueprint(reviews_bp)
+schools_bp.register_blueprint(recent_events_bp)
 
 @schools_bp.route("/")
 def get_all_schools():
@@ -22,6 +23,9 @@ def get_one_school(school_id):
         return school_schema.dump(school)
     else:
         return {"error": f"School with id {school_id} not found"}, 404
+
+
+# authorise as admin needed for the below three controllers
 
 @schools_bp.route("/", methods=["POST"])
 # @jwt_required()
@@ -45,7 +49,7 @@ def create_school():
    
     return school_schema.dump(school)
 
-# /cards/<id> - DELETE - delete a card
+
 @schools_bp.route("/<int:school_id>", methods=["DELETE"])
 # @jwt_required()
 def delete_school(school_id):
