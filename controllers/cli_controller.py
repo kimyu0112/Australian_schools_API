@@ -34,6 +34,11 @@ def seed_tables():
             user_name="kimyu0112",
             email="kimyu0112@outlook.com",
             password=bcrypt.generate_password_hash("168891").decode("utf-8"),
+        ),
+         User(
+            user_name="hm09290929",
+            email="hm09290929@outlook.com",
+            password=bcrypt.generate_password_hash("333444").decode("utf-8"),
         )
     ]
 
@@ -103,6 +108,26 @@ def seed_tables():
     ]
     
     db.session.add_all(reviews)
+
+    events = [
+        Event(
+            event_title="School open day is coming",
+            event_brief_desciption="Blablabla",
+            school=schools[0]
+        ),
+        Event(
+            event_title="This school has achieved excelent ACE results",
+            event_brief_desciption="Blablabla",
+            school=schools[1]
+        ),
+        Event(
+            event_title="This school has increased school fees",
+            event_brief_desciption="Blablabla",
+            school=schools[1]
+        )
+    ]
+
+    db.session.add_all(events)
 
     db.session.commit()
 

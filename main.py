@@ -34,4 +34,10 @@ def create_app():
     from controllers.school_controller import schools_bp
     app.register_blueprint(schools_bp)
 
+    from controllers.review_controller import reviews_bp
+    app.register_blueprint(reviews_bp)
+
+    from controllers.recent_event_controller import recent_events_bp
+    app.register_blueprint(recent_events_bp)
+
     return app

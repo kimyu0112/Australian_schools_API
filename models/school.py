@@ -2,8 +2,8 @@ from init import db, ma
 from marshmallow import fields
 from marshmallow.validate import OneOf
 
-VALID_STATES = ("New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", "Tasmania", "Northern Territory", "Australian Capital Territory")
-VALID_SCHOOL_TYPES = ("Government School", "Private School", "Independent School", "Catholic School")
+# VALID_STATES = ("New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", "Tasmania", "Northern Territory", "Australian Capital Territory")
+# VALID_SCHOOL_TYPES = ("Government School", "Private School", "Independent School", "Catholic School")
 
 class School(db.Model):
     __tablename__ = "schools"

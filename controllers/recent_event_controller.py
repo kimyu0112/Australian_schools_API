@@ -3,10 +3,12 @@ from flask import Blueprint, request
 from init import db
 from models.school import School, school_schema, schools_schema
 from models.recent_event import Event, event_schema, events_schema
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from utils import authorise_as_admin
 
-recent_events_bp = Blueprint("recent_events", __name__, url_prefix="/<int:school_id>")
+recent_events_bp = Blueprint("recent_events", __name__, url_prefix="/<int:school_id>/recent_events")
 
-@recent_events_bp.route("/recent_events")
+@recent_events_bp.route("/")
 def retrieve_recent_events_by_school(school_id):
     stmt_school = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt_school)
@@ -19,49 +21,55 @@ def retrieve_recent_events_by_school(school_id):
     else:
         return {"error": f"School with id {school_id} not found."}, 404
 
-# @reviews_bp.route("/reviews", methods=["POST"])
-# @jwt_required()
-# def create_review(school_id):
-#     body_data = review_schema.load(request.get_json(), partial=True)
+@recent_events_bp.route("/", methods=["POST"])
+def create_recent_event(school_id):
+    body_data = request.get_json() # to be checked
     
-#     stmt = db.select(School).filter_by(id=school_id)
-#     school = db.session.scalar(stmt)
+    stmt = db.select(School).filter_by(id=school_id)
+    school = db.session.scalar(stmt)
 
-#     if school:
-#         review = Review(
-#             review_title=body_data.get("review_title"),
-#             review_content=body_data.get("review_content"),
-#             user_id=get_jwt_identity(),
-#             school=school
-#         )
+    if school:
+        event = Event(
+            event_title=body_data.get("event_title"),
+            event_brief_desciption=body_data.get("event_brief_desciption"),
+            school=school
+        )
     
-#         db.session.add(review)
-#         db.session.commit()
+        db.session.add(event)
+        db.session.commit()
 
-#         return review_schema.dump(review), 201
+        return event_schema.dump(event), 201
 
-#     else:
-#         return {"error": f"School with id {school_id} not found."}, 404
+    else:
+        return {"error": f"School with id {school_id} not found."}, 404
 
 
-# @reviews_bp.route("/reviews/<int:review_id>", methods=["DELETE"])
-# @jwt_required()
-# def delete_review(school_id, review_id):
-#     stmt = db.select(Review).filter_by(id=review_id)
-#     review = db.session.scalar(stmt)
+@recent_events_bp.route("/<int:event_id>/", methods=["DELETE"])
+@jwt_required()
+def delete_event(school_id, event_id):
 
-#     if review:
-#         is_admin = authorise_as_admin()
+    stmt_school = db.select(School).filter_by(id=school_id)
+    school = db.session.scalar(stmt_school)
 
-#         if not is_admin and str(review.user_id) != get_jwt_identity():
-#             return {"error": "User is not authorised to perform this action."}, 403
+    if school:
+        stmt_event = db.select(Event).filter_by(id=event_id)
+        event = db.session.scalar(stmt_event)
+        
+    else:
+        return {"error": f"School with id {school_id} not found."}, 404
 
-#         db.session.delete(review)
-#         db.session.commit()
-#         return {"message": f"Review '{review.review_title}' deleted successfully"}
-    
-#     else:
-#         return {"error": f"Review with id {review_id} not found"}, 404
+    if event:
+        is_admin = authorise_as_admin()
+    else:
+        return {"message": f"Event with {event_id} does not exist"}, 404
+
+    if is_admin:
+        db.session.delete(event)
+        db.session.commit()
+        return {"message": f"Event id {event_id} deleted successfully"}
+    else:
+        return {"message": "you are not authorised to perform this action"}, 403
+            
 
 # @reviews_bp.route("/reviews/<int:review_id>", methods=["PUT", "PATCH"])
 # @jwt_required()
