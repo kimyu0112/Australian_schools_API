@@ -46,7 +46,7 @@ def seed_tables():
             state="Victoria",
             suburb="Berwick",
             education_level="Primary School",
-            sector="Government",
+            school_type="Government School",
             total_enrolment=964,
             state_overall_score=96
         ),
@@ -56,7 +56,7 @@ def seed_tables():
             state="Victoria",
             suburb="Berwick",
             education_level="Secondary School",
-            sector="Government",
+            school_type="Government School",
             total_enrolment=1226,
             state_overall_score=87
         )

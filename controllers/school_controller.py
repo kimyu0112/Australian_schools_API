@@ -35,7 +35,7 @@ def create_school():
         state=body_data.get("state"),
         suburb=body_data.get("suburb"),
         education_level=body_data.get("education_level"),
-        sector=body_data.get("sector"),
+        school_type=body_data.get("school_type"),
         total_enrolment=body_data.get("total_enrolment"),
         state_overall_score=body_data.get("state_overall_score")
     )
@@ -71,7 +71,7 @@ def update_school(school_id):
         school.state=body_data.get("state") or school.state
         school.suburb=body_data.get("suburb") or school.suburb
         school.education_level=body_data.get("education_level") or school.education_level
-        school.sector=body_data.get("sector") or school.sector
+        school.school_type=body_data.get("school_type") or school.school_type
         school.total_enrolment=body_data.get("total_enrolment") or school.total_enrolment
         school.state_overall_score=body_data.get("state_overall_score") or school.state_overall_score
 

@@ -22,10 +22,13 @@ class Review(db.Model):
 class ReviewSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=["user_name"])
     school = fields.Nested('SchoolSchema', only=["school_name"])
+
     review_title = fields.String(required=True, validate=And(
-        Length(min=2, error="Title must be at least 2 characters long"),
+        Length(min=6, error="Title must be at least 6 characters long"),
         Regexp('^[A-Za-z0-9 ]+$', error="Alphanumeric characters only")
     ))
+
+    review_content = fields.String(required=True, validate=Length(min=6, error="Review must be at least 6 characters long"))
 
     class Meta:
         fields = ("id", "review_title", "review_content", "created_at_time", "user", "school")
