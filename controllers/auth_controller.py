@@ -7,8 +7,10 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 from init import bcrypt, db
 from models.user import User, user_schema, UserSchema
+from controllers.follow_controller import follows_bp
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+auth_bp.register_blueprint(follows_bp)
 
 @auth_bp.route("/register", methods=["POST"])
 def register_user():
