@@ -5,10 +5,12 @@ from init import db
 from models.school import School, school_schema, schools_schema
 from controllers.review_controller import reviews_bp
 from controllers.recent_event_controller import recent_events_bp
+from controllers.school_subject_controller import school_subjects_bp
 
 schools_bp = Blueprint("schools", __name__, url_prefix="/schools")
-schools_bp.register_blueprint(reviews_bp)
+# schools_bp.register_blueprint(reviews_bp)
 schools_bp.register_blueprint(recent_events_bp)
+schools_bp.register_blueprint(school_subjects_bp)
 
 @schools_bp.route("/")
 def get_all_schools():
@@ -26,9 +28,7 @@ def get_one_school(school_id):
         return {"error": f"School with id {school_id} not found"}, 404
 
 
-# authorise as admin needed for the below three controllers
-
-@schools_bp.route("/", methods=["POST"])
+@schools_bp.route("/", methods=["POST"]) # admin needed
 # @jwt_required()
 def create_school():
  
@@ -51,7 +51,7 @@ def create_school():
     return school_schema.dump(school)
 
 
-@schools_bp.route("/<int:school_id>", methods=["DELETE"])
+@schools_bp.route("/<int:school_id>", methods=["DELETE"]) # admin needed
 # @jwt_required()
 def delete_school(school_id):
     stmt = db.select(School).filter_by(id=school_id)
@@ -64,7 +64,7 @@ def delete_school(school_id):
         return {"error": f"School with id {school_id} not found"}, 404
     
 
-@schools_bp.route("/<int:school_id>", methods=["PUT", "PATCH"])
+@schools_bp.route("/<int:school_id>", methods=["PUT", "PATCH"]) # admin needed
 # @jwt_required()
 def update_school(school_id):
     body_data = request.get_json()

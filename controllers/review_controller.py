@@ -7,7 +7,7 @@ from models.user import User, user_schema, users_schema
 from models.school import School
 from utils import authorise_as_admin
 
-reviews_bp = Blueprint("reviews", __name__, url_prefix="/<int:school_id>")
+reviews_bp = Blueprint("reviews", __name__)
 
 @reviews_bp.route("/<int:user_id>/reviews")
 @jwt_required()
@@ -24,7 +24,7 @@ def retrieve_review_by_userid(user_id):
         return {"error": f"User with id {user_id} not found."}, 404
 
 
-@reviews_bp.route("/reviews")
+@reviews_bp.route("/<int:school_id>/reviews")
 def retrieve_review_by_school(school_id):
     stmt_school = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt_school)
@@ -38,7 +38,7 @@ def retrieve_review_by_school(school_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
 
-@reviews_bp.route("/reviews", methods=["POST"])
+@reviews_bp.route("/reviews", methods=["POST"]) # account owner
 @jwt_required()
 def create_review(school_id):
     body_data = review_schema.load(request.get_json(), partial=True)
@@ -63,7 +63,7 @@ def create_review(school_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
 
-@reviews_bp.route("/reviews/<int:review_id>", methods=["DELETE"])
+@reviews_bp.route("/reviews/<int:review_id>", methods=["DELETE"]) # admin or account owner
 @jwt_required()
 def delete_review(school_id, review_id):
     stmt = db.select(Review).filter_by(id=review_id)
@@ -82,7 +82,7 @@ def delete_review(school_id, review_id):
     else:
         return {"error": f"Review with id {review_id} not found"}, 404
 
-@reviews_bp.route("/reviews/<int:review_id>", methods=["PUT", "PATCH"])
+@reviews_bp.route("/reviews/<int:review_id>", methods=["PUT", "PATCH"]) # account owner
 @jwt_required()
 def edit_review(school_id, review_id):
     body_data = review_schema.load(request.get_json())

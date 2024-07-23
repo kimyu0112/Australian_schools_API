@@ -1,4 +1,5 @@
 from datetime import timedelta
+import functools
 
 from flask import Blueprint, request
 from sqlalchemy.exc import IntegrityError
@@ -10,7 +11,6 @@ from models.user import User, user_schema, UserSchema
 from controllers.follow_controller import follows_bp
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
-auth_bp.register_blueprint(follows_bp)
 
 @auth_bp.route("/register", methods=["POST"])
 def register_user():
@@ -51,27 +51,53 @@ def login_user():
     else:
         return {"error": "Invalid email or password"}, 401
 
-@auth_bp.route("/users", methods=["PUT", "PATCH"])
-@jwt_required()
-def update_user():
-    # get the fields from body of the request
-    body_data = UserSchema().load(request.get_json(), partial=True)
-    password = body_data.get("password")
-    # fetch the user from the db
-    stmt = db.select(User).filter_by(id=get_jwt_identity())
+
+def is_user_admin():
+
+    # Get user_id from the JWT token
+    id = int(get_jwt_identity())
+
+    # Find the user record with the user_id
+    # SELECT * FROM users where user_id = jwt_user_id
+    stmt = db.select(User).filter_by(id=user_id)
     user = db.session.scalar(stmt)
-    # if user exists
-    if user:
-        # update the fields
-        user.name = body_data.get("name") or user.name
-        # user.password = <hashed-password> or user.password
-        if password:
-            user.password = bcrypt.generate_password_hash(password).decode("utf-8")
-        # commit to the DB
-        db.session.commit()
-        # return a response
-        return user_schema.dump(user)
-    # else
-    else:
-        # return an error
-        return {"error": "User does not exist"}
+
+    # For edge case where old JWT token is used for a deleted account
+    if user is None:
+        return {
+            "error": "The logged in user has been deleted. Please login again."
+        }, 403
+
+    # Return True if user is admin, otherwise False
+    return user.is_admin
+
+
+# Decorator function to make sure user account is an admin
+def authorise_as_admin(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+
+        # Get user_id from the JWT token
+        id = int(get_jwt_identity())
+
+        # SELECT * FROM users where user_id = jwt_user_id
+        stmt = db.select(User).filter_by(id=user_id)
+        user = db.session.scalar(stmt)
+
+        # For edge case where old JWT token is used for a deleted account
+        if user is None:
+            return {
+                "error": "The logged in user has been deleted. Please login again."
+            }, 403
+
+        # Run the decorated function if user is admin
+        if user.is_admin:
+            return fn(*args, **kwargs)
+
+        # Else, return error that user is not an admin
+        else:
+            return {
+                "error": "User account does not have admin privilleges"
+            }, 403
+
+    return wrapper

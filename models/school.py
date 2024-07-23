@@ -21,7 +21,7 @@ class School(db.Model):
     follows = db.relationship('Follow', back_populates='school', cascade="all, delete")
     reviews = db.relationship('Review', back_populates='school', cascade="all, delete")
     recent_events = db.relationship('Event', back_populates='school', cascade="all, delete")
-    school_subjects = db.relationship('SchoolSubject', back_populates='school')
+    school_subjects = db.relationship('SchoolSubject', back_populates='school', cascade="all, delete")
 
 class SchoolSchema(ma.Schema):
     follows = fields.List(fields.Nested('FollowSchema'), exclude=["school"])

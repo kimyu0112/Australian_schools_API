@@ -21,7 +21,7 @@ def retrieve_recent_events_by_school(school_id):
     else:
         return {"error": f"School with id {school_id} not found."}, 404
 
-@recent_events_bp.route("/", methods=["POST"])
+@recent_events_bp.route("/", methods=["POST"]) # admin needed
 def create_recent_event(school_id):
     body_data = request.get_json() # to be checked
     
@@ -44,7 +44,7 @@ def create_recent_event(school_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
 
-@recent_events_bp.route("/<int:event_id>/", methods=["DELETE"])
+@recent_events_bp.route("/<int:event_id>/", methods=["DELETE"]) # admin right needed
 @jwt_required()
 def delete_event(school_id, event_id):
 
@@ -59,36 +59,30 @@ def delete_event(school_id, event_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
     if event:
-        is_admin = authorise_as_admin()
-    else:
-        return {"message": f"Event with {event_id} does not exist"}, 404
-
-    if is_admin:
         db.session.delete(event)
         db.session.commit()
         return {"message": f"Event id {event_id} deleted successfully"}
+
     else:
-        return {"message": "you are not authorised to perform this action"}, 403
+        return {"message": f"Event with {event_id} does not exist"}, 404
             
+@recent_events_bp.route("/<int:event_id>/", methods=["PUT", "PATCH"]) # admin
+@jwt_required()
+def edit_event(school_id, event_id):
+    body_data = event_schema.load(request.get_json())
 
-# @reviews_bp.route("/reviews/<int:review_id>", methods=["PUT", "PATCH"])
-# @jwt_required()
-# def edit_review(school_id, review_id):
-#     body_data = review_schema.load(request.get_json())
+    stmt = db.select(Event).filter_by(id=event_id)
+    event = db.session.scalar(stmt)
 
-#     stmt = db.select(Review).filter_by(id=review_id)
-#     review = db.session.scalar(stmt)
+    if event:
+        event.event_title_title = body_data.get("event_title") or event.event_title_title
+        event.event_brief_desciption = body_data.get("event_brief_desciption") or event.event_brief_desciption
 
-#     if review:
-#         if str(review.user_id) != get_jwt_identity():
-#             return {"error": "You are not the owner of the review"}, 403 
-
-#         review.review_title = body_data.get("review_title") or review.review_title
-#         review.review_content = body_data.get("review_content") or review.review_content
+        school_id = school_id
     
-#         db.session.commit()
+        db.session.commit()
       
-#         return review_schema.dump(review)
+        return event_schema.dump(event)
 
-#     else:
-#         return {"error": f"Revuew with id {review_id} not found"}, 404
+    else:
+        return {"error": f"Event with id {event_id} not found"}, 404

@@ -7,7 +7,7 @@ class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject_name = db.Column(db.String, nullable=False)
 
-    school_subjects = db.relationship('SchoolSubject', back_populates='subject')
+    school_subjects = db.relationship('SchoolSubject', back_populates='subject', cascade="all, delete")
 
 class SubjectSchema(ma.Schema):
     school_subjects = fields.List(fields.Nested('SchoolSubjectSchema'), exclude=["subject"])
