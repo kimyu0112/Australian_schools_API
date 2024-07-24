@@ -5,13 +5,13 @@ from init import db
 from models.review import Review, review_schema, reviews_schema
 from models.user import User, user_schema, users_schema
 from models.school import School
-from utils import authorise_as_admin
+from utils import authorise_as_admin, auth_as_admin_decorator
 
 reviews_bp = Blueprint("reviews", __name__)
 
-@reviews_bp.route("/<int:user_id>/reviews")
+@reviews_bp.route("/users/<int:user_id>/reviews") #admin or account owner
 @jwt_required()
-def retrieve_review_by_userid(user_id):
+def retrieve_review_by_user_id(user_id):
     stmt_user = db.select(User).filter_by(id=user_id)
     user = db.session.scalar(stmt_user)
 
@@ -23,8 +23,7 @@ def retrieve_review_by_userid(user_id):
     else:
         return {"error": f"User with id {user_id} not found."}, 404
 
-
-@reviews_bp.route("/<int:school_id>/reviews")
+@reviews_bp.route("/schools/<int:school_id>/reviews")
 def retrieve_review_by_school(school_id):
     stmt_school = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt_school)
@@ -37,8 +36,7 @@ def retrieve_review_by_school(school_id):
     else:
         return {"error": f"School with id {school_id} not found."}, 404
 
-
-@reviews_bp.route("/reviews", methods=["POST"]) # account owner
+@reviews_bp.route("/schools/<int:school_id>/reviews", methods=["POST"]) # account owner
 @jwt_required()
 def create_review(school_id):
     body_data = review_schema.load(request.get_json(), partial=True)
@@ -47,6 +45,7 @@ def create_review(school_id):
     school = db.session.scalar(stmt)
 
     if school:
+
         review = Review(
             review_title=body_data.get("review_title"),
             review_content=body_data.get("review_content"),
@@ -63,7 +62,7 @@ def create_review(school_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
 
-@reviews_bp.route("/reviews/<int:review_id>", methods=["DELETE"]) # admin or account owner
+@reviews_bp.route("/schools/<int:school_id>/reviews/<int:review_id>/", methods=["DELETE"]) # admin or account owner
 @jwt_required()
 def delete_review(school_id, review_id):
     stmt = db.select(Review).filter_by(id=review_id)
@@ -82,7 +81,7 @@ def delete_review(school_id, review_id):
     else:
         return {"error": f"Review with id {review_id} not found"}, 404
 
-@reviews_bp.route("/reviews/<int:review_id>", methods=["PUT", "PATCH"]) # account owner
+@reviews_bp.route("/schools/<int:school_id>/reviews/<int:review_id>/", methods=["PUT", "PATCH"]) # account owner
 @jwt_required()
 def edit_review(school_id, review_id):
     body_data = review_schema.load(request.get_json())
@@ -102,4 +101,4 @@ def edit_review(school_id, review_id):
         return review_schema.dump(review)
 
     else:
-        return {"error": f"Revuew with id {review_id} not found"}, 404
+        return {"error": f"Review with id {review_id} not found"}, 404

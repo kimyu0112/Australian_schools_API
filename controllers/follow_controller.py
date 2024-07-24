@@ -7,7 +7,7 @@ from models.user import User, user_schema
 
 follows_bp = Blueprint("follows", __name__, url_prefix="/<int:user_id>/follows")
 
-@follows_bp.route("/")
+@follows_bp.route("/") # admin or account owner
 # @jwt_required()
 def get_all_follows(user_id):
     stmt_follow = db.select(Follow).filter_by(user_id=user_id)

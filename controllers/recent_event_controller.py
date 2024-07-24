@@ -4,7 +4,7 @@ from init import db
 from models.school import School, school_schema, schools_schema
 from models.recent_event import Event, event_schema, events_schema
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils import authorise_as_admin
+from utils import auth_as_admin_decorator
 
 recent_events_bp = Blueprint("recent_events", __name__, url_prefix="/<int:school_id>/recent_events")
 
@@ -22,8 +22,10 @@ def retrieve_recent_events_by_school(school_id):
         return {"error": f"School with id {school_id} not found."}, 404
 
 @recent_events_bp.route("/", methods=["POST"]) # admin needed
+@jwt_required()
+@auth_as_admin_decorator
 def create_recent_event(school_id):
-    body_data = request.get_json() # to be checked
+    body_data = request.get_json()
     
     stmt = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt)
@@ -46,6 +48,7 @@ def create_recent_event(school_id):
 
 @recent_events_bp.route("/<int:event_id>/", methods=["DELETE"]) # admin right needed
 @jwt_required()
+@auth_as_admin_decorator
 def delete_event(school_id, event_id):
 
     stmt_school = db.select(School).filter_by(id=school_id)
@@ -68,6 +71,7 @@ def delete_event(school_id, event_id):
             
 @recent_events_bp.route("/<int:event_id>/", methods=["PUT", "PATCH"]) # admin
 @jwt_required()
+@auth_as_admin_decorator
 def edit_event(school_id, event_id):
     body_data = event_schema.load(request.get_json())
 

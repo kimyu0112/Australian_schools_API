@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from init import db
 from models.school import School
 from models.school_subject import SchoolSubject, school_subject_schema, school_subjects_schema
+from utils import auth_as_admin_decorator
 
 school_subjects_bp = Blueprint("school_subjects", __name__, url_prefix="/<int:school_id>/subjects")
 
@@ -25,6 +26,8 @@ def get_all_subjects_by_school(school_id):
 
 # post a subject to school connection
 @school_subjects_bp.route("/", methods=["POST"]) # admin right needed
+@jwt_required()
+@auth_as_admin_decorator
 def create_subject_taught_by_school(school_id):
 
     stmt_school = db.select(School).filter_by(id=school_id)
@@ -48,6 +51,8 @@ def create_subject_taught_by_school(school_id):
 
 # delete a subject to school connection
 @school_subjects_bp.route("/<school_subject_id>", methods=["DELETE"]) # admin right needed
+@jwt_required()
+@auth_as_admin_decorator
 def delete_subject_taught_by_school(school_id, school_subject_id):
     stmt = db.select(SchoolSubject).filter_by(id=school_subject_id)
     school_subject = db.session.scalar(stmt)

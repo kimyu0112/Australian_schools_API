@@ -3,18 +3,20 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from init import db
 from models.subject import Subject, subject_schema, subjects_schema
+from utils import auth_as_admin_decorator
 
 subjects_bp = Blueprint("subjects", __name__, url_prefix="/subjects")
 
 @subjects_bp.route("/")
 def retrieve_all_subjects():
-    stmt = db.select(Subject).order_by(Subject.subject_name())
+    stmt = db.select(Subject).order_by(Subject.subject_name)
     subjects = db.session.scalars(stmt)
     return subjects_schema.dump(subjects), 200
 
 
 @subjects_bp.route("/", methods=["POST"]) #admin right needed
-# @jwt_required()
+@jwt_required()
+@auth_as_admin_decorator
 def create_subject():
     body_data = request.get_json() 
     
@@ -28,7 +30,8 @@ def create_subject():
     return subject_schema.dump(subject)
 
 @subjects_bp.route("/<int:subject_id>/", methods=["DELETE"]) # admin right needed
-# @jwt_required()
+@jwt_required()
+@auth_as_admin_decorator
 def delete_subject(subject_id):
     stmt = db.select(Subject).filter_by(id=subject_id)
     subject = db.session.scalar(stmt)

@@ -20,7 +20,7 @@ class Review(db.Model):
     school = db.relationship('School', back_populates='reviews')
 
 class ReviewSchema(ma.Schema):
-    user = fields.Nested('UserSchema', only=["user_name"])
+    user = fields.Nested('UserSchema', only=["id", "user_name"])
     school = fields.Nested('SchoolSchema', only=["school_name"])
 
     review_title = fields.String(required=True, validate=And(
