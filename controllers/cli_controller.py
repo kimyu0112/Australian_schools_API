@@ -27,18 +27,18 @@ def seed_tables():
         User(
             user_name="admin",
             email="admin@email.com",
-            password=bcrypt.generate_password_hash("168891").decode("utf-8"),
+            password=bcrypt.generate_password_hash("Huber@123456").decode("utf-8"),
             is_admin=True
         ),
         User(
-            user_name="kimyu0112",
-            email="kimyu0112@outlook.com",
-            password=bcrypt.generate_password_hash("168891").decode("utf-8"),
+            user_name="user1234",
+            email="user1234@outlook.com",
+            password=bcrypt.generate_password_hash("Huber@234567").decode("utf-8"),
         ),
          User(
-            user_name="hm09290929",
-            email="hm09290929@outlook.com",
-            password=bcrypt.generate_password_hash("333444").decode("utf-8"),
+            user_name="huber2345",
+            email="huber2345@outlook.com",
+            password=bcrypt.generate_password_hash("Asdf@3579").decode("utf-8"),
         )
     ]
 
@@ -64,7 +64,18 @@ def seed_tables():
             school_type="Government School",
             total_enrolment=1226,
             state_overall_score=87
-        )
+        ),
+        School(
+            school_name="Berwick College",
+            contact_email="berwickcollege@education.vic.government.au",
+            state="Victoria",
+            suburb="Berwick",
+            education_level="Secondary School",
+            school_type="Government School",
+            total_enrolment=1888,
+            state_overall_score=77
+        ),
+
     ]
 
     db.session.add_all(schools)
@@ -81,6 +92,10 @@ def seed_tables():
         Follow(
             user=users[0],
             school=schools[1]
+        ),
+        Follow(
+            user=users[1],
+            school=schools[2]
         )
     ]
     
@@ -94,7 +109,7 @@ def seed_tables():
             school=schools[0]
         ),
         Review(
-            review_title="This school is bad!",
+            review_title="This school should have more options for canteen food!",
             review_content="Blablabla",
             user=users[0],
             school=schools[1]
@@ -104,6 +119,12 @@ def seed_tables():
             review_content="Blablabla",
             user=users[1],
             school=schools[1]
+        ),
+        Review(
+            review_title="Principal and his staff are excellent",
+            review_content="Blablabla",
+            user=users[1],
+            school=schools[2]
         )
     ]
     
@@ -124,10 +145,53 @@ def seed_tables():
             event_title="This school has increased school fees",
             event_brief_desciption="Blablabla",
             school=schools[1]
+        ),
+        Event(
+            event_title="This school has an upcoming book fair on xx/xx/2024",
+            event_brief_desciption="Blablabla",
+            school=schools[2]
+        )
+    ]
+    
+    db.session.add_all(events)
+
+    subjects = [
+        Subject(
+            subject_name="Mathematics"
+        ),
+        Subject(
+            subject_name="English Literature"
+        ),
+        Subject(
+            subject_name="Physical Education"
+        ),
+        Subject(
+            subject_name="Enquiry Learning"
+        )
+    ]
+    
+    db.session.add_all(subjects)
+
+    school_subjects = [
+        SchoolSubject(
+            school=schools[1],
+            subject=subjects[1]
+        ),
+        SchoolSubject(
+            school=schools[1],
+            subject=subjects[2]
+        ),
+        SchoolSubject(
+            school=schools[0],
+            subject=subjects[1]
+        ),
+        SchoolSubject(
+            school=schools[2],
+            subject=subjects[0]
         )
     ]
 
-    db.session.add_all(events)
+    db.session.add_all(school_subjects)
 
     db.session.commit()
 

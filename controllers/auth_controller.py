@@ -2,13 +2,13 @@ from datetime import timedelta
 import functools
 
 from flask import Blueprint, request
+# from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity
 
 from init import bcrypt, db
 from models.user import User, user_schema, UserSchema
-from controllers.follow_controller import follows_bp
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -29,13 +29,16 @@ def register_user():
         db.session.commit()
 
         return user_schema.dump(user), 201
+
+    # except ValidationError as ve:
+    #     return {"error": ve.messages}, 400
     
     except IntegrityError as err:
-        if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
-            return {"error": f"The column {err.orig.diag.column_name} is required"}, 404
+        if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION: # to be fixed
+            return {"error": f"The column {err.orig.diag.column_name} is required"}, 409
         
-        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
-            return {"error": "Email address is already in use"}, 409
+        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION: # to be fixed
+            return {"error": f"{err.orig.diag.column_name} is already in use"}, 409
 
 @auth_bp.route("/login", methods=["POST"])
 def login_user():
@@ -44,18 +47,17 @@ def login_user():
     user = db.session.scalar(stmt)
 
     if user and bcrypt.check_password_hash(user.password, body_data.get("password")):
-        token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1))
+        token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=7))
  
         return {"email": user.email, "is_admin": user.is_admin, "token": token}
 
     else:
-        return {"error": "Invalid email or password"}, 401
-
+        return {"error": "Invalid user email or password"}, 401
 
 def is_user_admin():
 
     # Get user_id from the JWT token
-    id = int(get_jwt_identity())
+    user_id = int(get_jwt_identity())
 
     # Find the user record with the user_id
     # SELECT * FROM users where user_id = jwt_user_id
@@ -78,7 +80,7 @@ def authorise_as_admin(fn):
     def wrapper(*args, **kwargs):
 
         # Get user_id from the JWT token
-        id = int(get_jwt_identity())
+        user_id = int(get_jwt_identity())
 
         # SELECT * FROM users where user_id = jwt_user_id
         stmt = db.select(User).filter_by(id=user_id)

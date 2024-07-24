@@ -8,7 +8,7 @@ from models.user import User, user_schema
 follows_bp = Blueprint("follows", __name__, url_prefix="/<int:user_id>/follows")
 
 @follows_bp.route("/")
-@jwt_required()
+# @jwt_required()
 def get_all_follows(user_id):
     stmt_follow = db.select(Follow).filter_by(user_id=user_id)
     follows = db.session.scalars(stmt_follow)
@@ -24,7 +24,7 @@ def get_all_follows(user_id):
 
 @follows_bp.route("/", methods=["POST"]) # account owner
 @jwt_required()
-def create_follow():
+def create_follow(user_id):
     body_data = request.get_json()
     follow = Follow(
         user_id = get_jwt_identity(),
@@ -36,7 +36,7 @@ def create_follow():
 
 @follows_bp.route("/<int:follow_id>", methods=["DELETE"]) # account owner
 @jwt_required()
-def delete_follow(follow_id):
+def delete_follow(user_id, follow_id):
     stmt = db.select(Follow).filter_by(id=follow_id)
     follow = db.session.scalar(stmt)
     if follow:
