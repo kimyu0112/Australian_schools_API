@@ -18,7 +18,7 @@ class Follow(db.Model):
 
 class FollowSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=["id", "user_name"])
-    school = fields.Nested('SchoolSchema', only=["school_name"])
+    school = fields.Nested('SchoolSchema', only=["id", "name"])
     class Meta:
         fields = ("id", "user", "school", "created_at_time")
 
