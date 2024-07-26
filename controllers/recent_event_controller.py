@@ -1,9 +1,9 @@
 from flask import Blueprint, request
 
 from init import db
-from models.school import School, school_schema, schools_schema
+from models.school import School
 from models.recent_event import Event, event_schema, events_schema
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from utils import auth_as_admin_decorator
 
 recent_events_bp = Blueprint("recent_events", __name__, url_prefix="/recent-events")

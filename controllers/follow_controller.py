@@ -3,7 +3,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from init import db
 from models.follow import Follow, follow_schema, follows_schema
-from models.user import User
 from models.school import School
 from utils import auth_as_admin_decorator, account_owner_or_admin_decorator
 

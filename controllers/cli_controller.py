@@ -104,25 +104,25 @@ def seed_tables():
     reviews = [
         Review(
             review_title="This school's Principal is good!",
-            review_content="Blablabla",
+            review_content="He is kind and carinig to his students.",
             user_id=1,
             school_id=1
         ),
         Review(
             review_title="This school should have more options for canteen food!",
-            review_content="Blablabla",
+            review_content="Canteen has not enought options for vegetarians.",
             user_id=1,
             school_id=2
         ),
         Review(
             review_title="Staff can be better supported",
-            review_content="Blablabla",
+            review_content="Not enough back up when teachers are sick.",
             user_id=2,
             school_id=2
         ),
         Review(
             review_title="Principal and his staff are excellent",
-            review_content="Blablabla",
+            review_content="Best school my kid has ever attended.",
             user_id=2,
             school_id=3
         )
@@ -133,22 +133,22 @@ def seed_tables():
     events = [
         Event(
             event_title="School open day is coming",
-            event_brief_desciption="Blablabla",
+            event_brief_desciption="School open day will be next coming Monday xx/xx/2024.",
             school_id=1
         ),
         Event(
             event_title="This school has achieved excelent ACE results",
-            event_brief_desciption="Blablabla",
+            event_brief_desciption="78% of out students achieved ATAR 90 and above",
             school_id=2
         ),
         Event(
             event_title="This school has increased school fees",
-            event_brief_desciption="Blablabla",
+            event_brief_desciption="School fees have increased by 5%",
             school_id=2
         ),
         Event(
-            event_title="This school has an upcoming book fair on xx/xx/2024",
-            event_brief_desciption="Blablabla",
+            event_title="This school has an upcoming book fair on 1/08/2024",
+            event_brief_desciption="Please bring some money so your kid can purchase books of their interest.",
             school_id=3
         )
     ]
