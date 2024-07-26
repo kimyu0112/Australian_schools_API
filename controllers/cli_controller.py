@@ -46,7 +46,7 @@ def seed_tables():
 
     schools = [
         School(
-            school_name="Brenwood Park Primary School",
+            name="Brenwood Park Primary School",
             contact_email="brentwood.park.ps@education.vic.gov.au",
             state="Victoria",
             suburb="Berwick",
@@ -56,7 +56,7 @@ def seed_tables():
             state_overall_score=96
         ),
         School(
-            school_name="Kambrya College",
+            name="Kambrya College",
             contact_email="kambrya@education.vic.government.au",
             state="Victoria",
             suburb="Berwick",
@@ -66,7 +66,7 @@ def seed_tables():
             state_overall_score=87
         ),
         School(
-            school_name="Berwick College",
+            name="Berwick College",
             contact_email="berwickcollege@education.vic.government.au",
             state="Victoria",
             suburb="Berwick",
@@ -105,26 +105,26 @@ def seed_tables():
         Review(
             review_title="This school's Principal is good!",
             review_content="Blablabla",
-            user=users[0],
-            school=schools[0]
+            user_id=1,
+            school_id=1
         ),
         Review(
             review_title="This school should have more options for canteen food!",
             review_content="Blablabla",
-            user=users[0],
-            school=schools[1]
+            user_id=1,
+            school_id=2
         ),
         Review(
             review_title="Staff can be better supported",
             review_content="Blablabla",
-            user=users[1],
-            school=schools[1]
+            user_id=2,
+            school_id=2
         ),
         Review(
             review_title="Principal and his staff are excellent",
             review_content="Blablabla",
-            user=users[1],
-            school=schools[2]
+            user_id=2,
+            school_id=3
         )
     ]
     
@@ -134,22 +134,22 @@ def seed_tables():
         Event(
             event_title="School open day is coming",
             event_brief_desciption="Blablabla",
-            school=schools[0]
+            school_id=1
         ),
         Event(
             event_title="This school has achieved excelent ACE results",
             event_brief_desciption="Blablabla",
-            school=schools[1]
+            school_id=2
         ),
         Event(
             event_title="This school has increased school fees",
             event_brief_desciption="Blablabla",
-            school=schools[1]
+            school_id=2
         ),
         Event(
             event_title="This school has an upcoming book fair on xx/xx/2024",
             event_brief_desciption="Blablabla",
-            school=schools[2]
+            school_id=3
         )
     ]
     

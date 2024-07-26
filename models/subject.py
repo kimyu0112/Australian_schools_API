@@ -5,7 +5,7 @@ class Subject(db.Model):
     __tablename__ = "subjects"
 
     id = db.Column(db.Integer, primary_key=True)
-    subject_name = db.Column(db.String, nullable=False)
+    subject_name = db.Column(db.String, nullable=False, unique=True)
 
     school_subjects = db.relationship('SchoolSubject', back_populates='subject', cascade="all, delete")
 

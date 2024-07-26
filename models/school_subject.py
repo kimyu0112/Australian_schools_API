@@ -13,11 +13,11 @@ class SchoolSubject(db.Model):
     school = db.relationship('School', back_populates='school_subjects')
 
 class SchoolSubjectSchema(ma.Schema):
-    subject = fields.Nested('SubjectSchema', only=["subject_name"])
-    school = fields.Nested('SchoolSchema', only=["school_name"])
+    subject = fields.Nested('SubjectSchema', only=["id", "subject_name"])
+    school = fields.Nested('SchoolSchema', only=["id", "name"])
 
     class Meta:
         fields = ("id", "subject", "school")
 
-school_subject_schema = SchoolSubjectSchema(many=True)
-school_subjects_schema = SchoolSubjectSchema()
+school_subjects_schema = SchoolSubjectSchema(many=True)
+school_subject_schema = SchoolSubjectSchema()

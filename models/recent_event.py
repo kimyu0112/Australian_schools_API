@@ -13,7 +13,7 @@ class Event(db.Model):
     school = db.relationship('School', back_populates='recent_events')
 
 class EventSchema(ma.Schema):
-    school = fields.Nested('SchoolSchema', only=["id", "school_name"])
+    school = fields.Nested('SchoolSchema', only=["id", "name"])
     class Meta:
         fields = ("id", "event_title", "event_brief_desciption", "school")
 
