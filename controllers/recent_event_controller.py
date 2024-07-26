@@ -2,55 +2,20 @@ from flask import Blueprint, request
 
 from init import db
 from models.school import School
-from models.recent_event import Event, event_schema, events_schema
+from models.recent_event import Event, event_schema
 from flask_jwt_extended import jwt_required
 from utils import auth_as_admin_decorator
 
-recent_events_bp = Blueprint("recent_events", __name__, url_prefix="/recent-events")
+recent_events_bp = Blueprint("recent_events", __name__, url_prefix="/<int:school_id>/recent-events")
 
-# get all events from one school
-@recent_events_bp.route("/schools/<int:school_id>")
-def retrieve_recent_events_by_school(school_id):
-    stmt_school = db.select(School).filter_by(id=school_id)
-    school = db.session.scalar(stmt_school)
-
-    if school:
-        stmt_recent_events = db.select(Event).filter_by(school_id=school_id)
-        recent_events = db.session.scalars(stmt_recent_events)
-
-        return events_schema.dump(recent_events)
-
-    else:
-        return {"error": f"School with id {school_id} not found."}, 404
-
-# get all events
-@recent_events_bp.route("/")
-def get_all_events():
-    stmt = db.select(Event)
-    recent_events = db.session.scalars(stmt)
-
-    return events_schema.dump(recent_events)
-
-# get one event
-@recent_events_bp.route("/<event_id>")
-def retrieve_one_event(event_id):
-    stmt_event = db.select(Event).filter_by(id=event_id)
-    event = db.session.scalar(stmt_event)
-
-    if event:
-        return event_schema.dump(event)
-
-    else:
-        return {"error": f"Event with id {event_id} not found."}, 404
+# we already get the events while fetching schools, so, no need for "get events" route here
     
 # post one event
 @recent_events_bp.route("/", methods=["POST"]) # admin needed
 @jwt_required()
 @auth_as_admin_decorator
-def create_recent_event():
+def create_recent_event(school_id):
     body_data = request.get_json()
-    
-    school_id = body_data.get("school_id")
 
     stmt = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt)
@@ -74,7 +39,7 @@ def create_recent_event():
 @recent_events_bp.route("/<int:event_id>", methods=["PUT", "PATCH"]) # admin
 @jwt_required()
 @auth_as_admin_decorator
-def edit_event(event_id):
+def edit_event(school_id, event_id):
     body_data = event_schema.load(request.get_json())
 
     stmt = db.select(Event).filter_by(id=event_id)
@@ -96,9 +61,9 @@ def edit_event(event_id):
 @recent_events_bp.route("/<int:event_id>", methods=["DELETE"]) # admin right needed
 @jwt_required()
 @auth_as_admin_decorator
-def delete_event(event_id):
-    stmt_event = db.select(Event).filter_by(id=event_id)
-    event = db.session.scalar(stmt_event)
+def delete_event(school_id, event_id):
+    stmt = db.select(Event).filter_by(id=event_id)
+    event = db.session.scalar(stmt)
 
     if event:
         db.session.delete(event)
