@@ -26,9 +26,9 @@ def retrieve_one_subject(subject_id):
     return subject_schema.dump(subject)
 
 # post one subject
-@subjects_bp.route("/", methods=["POST"]) # admin right needed
+@subjects_bp.route("/", methods=["POST"]) 
 @jwt_required()
-@auth_as_admin_decorator
+@auth_as_admin_decorator # admin right needed
 def create_subject():
     try:
         body_data = request.get_json()
@@ -47,7 +47,7 @@ def create_subject():
             return {"error": f"subject already exists."}, 409
             
 # delete one subject
-@subjects_bp.route("/<int:subject_id>/", methods=["DELETE"]) # admin right needed
+@subjects_bp.route("/<int:subject_id>/", methods=["DELETE"]) 
 @jwt_required()
 @auth_as_admin_decorator
 def delete_subject(subject_id):

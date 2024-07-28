@@ -1,13 +1,23 @@
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
 
 from init import db
+from controllers.recent_event_controller import recent_events_bp
+from controllers.follow_controller import follows_bp
+from controllers.review_controller import reviews_bp
+from controllers.school_subject_controller import school_subjects_bp
 from models.school import School, school_schema, schools_schema
 from utils import auth_as_admin_decorator
 
 schools_bp = Blueprint("schools", __name__, url_prefix="/schools")
+
+schools_bp.register_blueprint(recent_events_bp)
+schools_bp.register_blueprint(follows_bp)
+schools_bp.register_blueprint(reviews_bp)
+schools_bp.register_blueprint(school_subjects_bp)
+
 
 # get all schools
 @schools_bp.route("/all")
@@ -30,9 +40,9 @@ def get_one_school(school_id):
         return {"error": f"School with id {school_id} not found"}, 404
 
 # post one school
-@schools_bp.route("/", methods=["POST"]) # admin needed
+@schools_bp.route("/", methods=["POST"]) 
 @jwt_required()
-@auth_as_admin_decorator
+@auth_as_admin_decorator # admin needed
 def create_school():
     try:
         body_data = request.get_json()
@@ -60,9 +70,9 @@ def create_school():
             return {"error": f"school_name already exists"}, 409
 
 # update one school
-@schools_bp.route("/<int:school_id>", methods=["PUT", "PATCH"]) # admin needed
+@schools_bp.route("/<int:school_id>", methods=["PUT", "PATCH"]) 
 @jwt_required()
-@auth_as_admin_decorator
+@auth_as_admin_decorator # admin needed
 def update_school(school_id):
     try:
         body_data = request.get_json()
@@ -92,9 +102,9 @@ def update_school(school_id):
             return {"error": f"school_name already exists."}, 409
 
 # delete one school
-@schools_bp.route("/<int:school_id>", methods=["DELETE"]) # admin needed
+@schools_bp.route("/<int:school_id>", methods=["DELETE"]) 
 @jwt_required()
-@auth_as_admin_decorator
+@auth_as_admin_decorator # admin needed
 def delete_school(school_id):
     stmt = db.select(School).filter_by(id=school_id)
     school = db.session.scalar(stmt)
@@ -103,7 +113,7 @@ def delete_school(school_id):
         db.session.delete(school)
         db.session.commit()
 
-        return {"message": f"School '{school.name}' deleted successfully"}
+        return {"message": f"School with id {school_id} deleted successfully"}
     
     else:
         return {"error": f"School with id {school_id} not found."}, 404
